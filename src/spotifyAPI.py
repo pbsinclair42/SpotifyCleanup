@@ -5,12 +5,12 @@ class SpotifyAPI():
     MARKET = "GB"
     BASEURL = "https://api.spotify.com/v1/"
 
-    TOKEN = "BQByZymkWklpHQXwRBdavBLlquNmOvASnblLBJUdwFp18xqBud-thkdvT5PL08IUpU6znAfwM5OOsqZyiXY_m6mM9eaAvm5jpIxNzY7JEv0K8wZNs2ZCEsAghn5ua2klhFXjoimqgIUd_dKr9OgPHq1qRYXTKemhge5meQ"
+    TOKEN = "BQBUQ8xP6KJevXiPdfhGU4d4T5QG49eHn-meT5a9T-rLe9LfI4i4a9TwPWTt2UL9j8MkUWrjyKrZLjHsfVyHJ2F8SHrsbAc2s4cNtu0HBESE52yQSe_VH3cfuhERk-eeiXGYjiSa4VWPVoZa7RETWejgWwfYfyB46Fogcg"
     STANDARD_HEADERS = {"Authorization": "Bearer " + TOKEN}
 
     @staticmethod
     def authenticate():
-        #TODO
+        # TODO: use a fixed private token not a temporary one
         url = "https://accounts.spotify.com/api/token"
         params = {'grant_type': 'client_credentials'}
         headers = SpotifyAPI.STANDARD_HEADERS
@@ -32,7 +32,8 @@ class SpotifyAPI():
             return toReturn
         except KeyError as e:
             if 'error' in response:
-                exit("Error getting user's playlists\n" + str(response['error']['status']) + ": " + response['error']['message'])
+                exit(str.format("Error getting user's playlists\n{}: {}", str(response['error']['status']),
+                                response['error']['message']))
             raise e
 
     @staticmethod
@@ -45,13 +46,17 @@ class SpotifyAPI():
             return response['tracks']['total']
         except KeyError as e:
             if 'error' in response:
-                exit("Error getting playlist info for '" + playlist['name'] + "':\n" + str(response['error']['status']) + ": " + response['error']['message'])
+                exit(str.format("Error getting playlist info for '{}':\n{}: {}", playlist['name'],
+                                str(response['error']['status']), response['error']['message']))
             raise e
 
     @staticmethod
     def getUnplayableTracksInPlaylist(playlist, silent=True):
         url = SpotifyAPI.BASEURL + "users/" + playlist['owner'] + "/playlists/" + playlist['id'] + "/tracks"
-        params = {"fields": "items(track(name,id,uri,is_playable,artists(name),album(images)))", "market": SpotifyAPI.MARKET}
+        params = {
+            "fields": "items(track(name,id,uri,is_playable,artists(name),album(images)))",
+            "market": SpotifyAPI.MARKET
+        }
         headers = SpotifyAPI.STANDARD_HEADERS
 
         numTracks = SpotifyAPI.getNumberOfTracks(playlist)
@@ -60,7 +65,6 @@ class SpotifyAPI():
         for offset in range(0, numTracks, 100):
             params["offset"] = offset
             response = getJSONResponse(url, params, headers)
-            #print(response)
 
             for item in response['items']:
                 track = item['track']

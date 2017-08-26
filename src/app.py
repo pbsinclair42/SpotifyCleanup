@@ -4,7 +4,6 @@ from spotifyAPI import SpotifyAPI
 app = Flask(__name__, static_url_path='')
 
 
-
 @app.route('/user/')
 def forUser():
     username = request.args['username']
@@ -35,3 +34,8 @@ def send_loading(path):
 @app.route('/favicon.ico')
 def fav():
     return "TODO"
+
+
+if __name__ == "__main__":
+    print("Hi")
+    app.run()
