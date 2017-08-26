@@ -51,7 +51,7 @@ class SpotifyAPI():
     @staticmethod
     def getUnplayableTracksInPlaylist(playlist, silent=True):
         url = SpotifyAPI.BASEURL + "users/" + playlist['owner'] + "/playlists/" + playlist['id'] + "/tracks"
-        params = {"fields": "items(track(name,id,uri,is_playable,artists(name)))", "market": SpotifyAPI.MARKET}
+        params = {"fields": "items(track(name,id,uri,is_playable,artists(name),album(images)))", "market": SpotifyAPI.MARKET}
         headers = SpotifyAPI.STANDARD_HEADERS
 
         numTracks = SpotifyAPI.getNumberOfTracks(playlist)
@@ -66,7 +66,12 @@ class SpotifyAPI():
                 track = item['track']
                 try:
                     if not track['is_playable']:
-                        trackInfo = {'title': track['name'], 'spotifyID': track['id'], 'artists': [artist['name'] for artist in track['artists']]}
+                        trackInfo = {
+                            'title': track['name'],
+                            'spotifyID': track['id'],
+                            'artists': [artist['name'] for artist in track['artists']],
+                            'albumArt': track['album']['images'][0]['url']
+                        }
                         unplayableTracks.append(trackInfo)
                         if not silent:
                             print(trackInfo)

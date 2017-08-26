@@ -1,9 +1,8 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, send_from_directory
 from spotifyAPI import SpotifyAPI
 
 app = Flask(__name__, static_url_path='')
 
-deadSongTracker = {}
 
 
 @app.route('/user/')
@@ -20,7 +19,6 @@ def getDeadSongs():
     name = request.args['owner']
     playlist = {'id': id, 'owner': owner, 'name': name}
     SpotifyAPI.getUnplayableTracksInPlaylist(playlist)
-    deadSongTracker[playlist['id']] = playlist
     return render_template("deadsongs.html", playlist=playlist)
 
 

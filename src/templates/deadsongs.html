@@ -12,7 +12,7 @@
                 <tr class="dead-track dead-track-{{ track.spotifyID }}">
                     <td class="title">{{ track.title }}</td>
                     <td class="artists">{% for artist in track.artists %}{{ artist }} {% endfor %}</td>
-                    <td class="albumArt"><img src='/static/images/loading.gif' style='width:25px;height:25px;'></td>
+                    <td class="albumArt"><img src='{{ track.albumArt }}'></td>
                 </tr>
             {% endfor %}
         </table>
