@@ -1,0 +1,22 @@
+<div id="dead-tracks-{{ playlist.id }}">
+    {% if playlist.unplayableTracks | length > 0 %}
+        <table style="max-width: 70vw">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Artists</th>
+                <th>Album Art</th>
+            </tr>
+            </thead>
+            {% for track in playlist.unplayableTracks %}
+                <tr class="dead-track dead-track-{{ track.spotifyID }}">
+                    <td class="title">{{ track.title }}</td>
+                    <td class="artists">{% for artist in track.artists %}{{ artist }} {% endfor %}</td>
+                    <td class="albumArt"><img src='/static/images/loading.gif' style='width:25px;height:25px;'></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <div class="allgood">No dead tracks!</div>
+    {% endif %}
+</div>
