@@ -25,17 +25,10 @@ def getDeadSongs():
 def home():
     return render_template('home.html')
 
-
-@app.route('/static/images/<path>')
-def send_loading(path):
-    return send_from_directory('static/images', path)
-
-
 @app.route('/favicon.ico')
 def fav():
     return "TODO"
 
 
 if __name__ == "__main__":
-    print("Hi")
     app.run()
