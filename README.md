@@ -14,7 +14,5 @@ Spotify Cleanup allows you to easily fix your Spotify playlists, including de-du
     cd src/
     export FLASK_APP=app.py
 
-* Get yourself an API key from Spotify.  Visit [their API docs](https://developer.spotify.com/web-api/console/get-playlists/) and click the "GET OAUTH TOKEN" button, then copy the token it generates and replace the old token in spotifyAPI > SpotifyAPI > TOKEN
-
 * Run the app:
     python -m flask run
