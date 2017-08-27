@@ -228,6 +228,18 @@ class SpotifyAPI():
         return playlist
 
 
+def removeTrackFromPlaylist(self, trackId, playlist, index):
+    url = self.BASEURL + "users/" + playlist['owner'] + "/playlists/" + playlist['id'] + "/tracks"
+    params = {"tracks": [{
+        'positions': [index],
+        'uri': "spotify:track:" + trackId
+    }]}
+    headers = self.STANDARD_HEADERS
+    headers['Content-Type'] = "application/json"
+    headers['Accept'] = "application/json"
+    return httpRequest(url, params, headers, method="delete")
+
+
 def _millisecondsToString(ms):
     string = str(timedelta(milliseconds=round(ms / 1000) * 1000))[0:7]
     while string[0] in '0:':
