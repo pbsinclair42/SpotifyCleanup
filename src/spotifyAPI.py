@@ -1,11 +1,16 @@
+import re
 from utils import httpRequest, buildUrl
 from itertools import groupby
 from datetime import timedelta
 from base64 import urlsafe_b64encode
+from math import isclose
+from statistics import mean
+
 
 class SpotifyAPI():
     MARKET = "GB"
     BASEURL = "https://api.spotify.com/v1/"
+    DURATION_LEEWAY = 10000
 
     def __init__(self, client_id, client_secret):
         self.CLIENT_ID = client_id
@@ -149,38 +154,63 @@ class SpotifyAPI():
         return unplayableTracks
 
     @staticmethod
-    def extractArtist(track):
-        return [artist['name'] for artist in track['artists']]
+    def extractArtists(track):
+        return {normalize(artist['name']) for artist in track['artists']}
 
     @staticmethod
     def extractTitle(track):
-        return track['name']
-
-    @staticmethod
-    def extractDuration(track):
-        return track['duration_ms']
+        return normalize(track['name'])
 
     @staticmethod
     def getDuplicateTracks(tracks, silent=True):
         duplicates = []
-        keyFunction = lambda track: {'artist': SpotifyAPI.extractArtist(track), 'title': SpotifyAPI.extractTitle(track)}
-        tracks = sorted(tracks, key=lambda x: str(keyFunction(x)))
-        for key, group in groupby(tracks, keyFunction):
+        tracks = sorted(tracks, key=SpotifyAPI.extractTitle)
+        for key, group in groupby(tracks, SpotifyAPI.extractTitle):
+            # all tracks with the same name
             group = list(group)
             if len(group) > 1:
-                group = list(map(lambda track: {
-                    'title': track['name'],
-                    'spotifyID': track['id'],
-                    'artists': [artist['name'] for artist in track['artists']],
-                    'albumArt': track['album']['images'][0]['url'],
-                    'added_at': track['added_at'],
-                    'preview_url': track['preview_url'],
-                    'index': track['index'],
-                    'duration': _millisecondsToString(track['duration_ms'])
-                }, group))
-                duplicates.append(group)
-                if not silent:
-                    print(group)
+                # we believe two tracks to be equal if they share an artist and are roughly similar length
+                # we also believe equality is transitive, ie if A shares an artist with B and B shares an artist with C,
+                # and they're all similar lengths, we believe A, B, and C are all equal
+                # each subgroup is a set of tracks we believe to be duplicates
+                subgroups = []
+                for track in group:
+                    artists = set(SpotifyAPI.extractArtists(track))
+                    duration = track['duration_ms']
+                    newGroup = True
+                    matches = [subgroup for subgroup in subgroups if len(artists.intersection(subgroup['artists'])) > 0
+                               and isclose(duration, mean(subgroup['durations']), abs_tol=SpotifyAPI.DURATION_LEEWAY)]
+                    if len(matches) > 0:
+                        subgroups[:] = [subgroup for subgroup in subgroups if
+                                        len(artists.intersection(subgroup['artists'])) == 0
+                                        and not isclose(duration, mean(subgroup['durations']),
+                                                        abs_tol=SpotifyAPI.DURATION_LEEWAY)]
+                    newTracks = [track]
+                    newArtists = artists
+                    newDurations = {duration}
+                    for subgroup in matches:
+                        newTracks += subgroup['tracks']
+                        newArtists.update(subgroup['artists'])
+                        newDurations.update(subgroup['durations'])
+                    subgroups.append({'artists': newArtists, 'tracks': newTracks, 'durations': newDurations})
+
+                subgroups = map(lambda x: x['tracks'], subgroups)
+                subgroups = list(filter(lambda group: len(group) > 1, subgroups))
+
+                for group in subgroups:
+                    group = list(map(lambda track: {
+                        'title': track['name'],
+                        'spotifyID': track['id'],
+                        'artists': [artist['name'] for artist in track['artists']],
+                        'albumArt': track['album']['images'][0]['url'],
+                        'added_at': track['added_at'],
+                        'preview_url': track['preview_url'],
+                        'index': track['index'],
+                        'duration': _millisecondsToString(track['duration_ms'])
+                    }, group))
+                    duplicates.append(group)
+                    if not silent:
+                        print(group)
 
         return duplicates
 
@@ -196,3 +226,17 @@ def _millisecondsToString(ms):
     while string[0] in '0:':
         string = string[1:]
     return string
+
+
+def normalize(string):
+    if ' - ' in string:
+        string = string[:string.index(' - ')]
+    while '(' in string and ')' in string:
+        string = string[:string.index('(')] + string[string.index(')') + 1:]
+        string = string.strip()
+    string = re.sub('\W|_', '', string)
+    return string.lower()
+
+
+if __name__ == "__main__":
+    print(SpotifyAPI.extractTitle({'name': "(A) Test title £3-_-I'vegot a brand(explicit)  edit (version 2)"}))
