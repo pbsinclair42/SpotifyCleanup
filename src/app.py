@@ -8,9 +8,12 @@ api = SpotifyAPI(CLIENT_ID, CLIENT_SECRET)
 
 @app.route('/user/')
 def forUser():
-    username = request.args['username']
-    playlists = api.getPlaylists(username)
-    return render_template("playlists.html", username=username, playlists=playlists)
+    try:
+        username = request.args['username']
+        playlists = api.getPlaylists(username)
+        return render_template("playlists.html", username=username, playlists=playlists)
+    except KeyError:
+        return "Error: Unknown username"
 
 
 @app.route('/getDeadSongs/')
@@ -43,7 +46,7 @@ def continueAuthentication():
         except Exception as e:
             print(e)
             return "Authentication failed"
-        return redirect("/user/?username="+api.userDetails['id'])
+        return redirect("/user/?username=" + api.userDetails['id'])
     else:
         # Access Denied
         error = request.args['error']

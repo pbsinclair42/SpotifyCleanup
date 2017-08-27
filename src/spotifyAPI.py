@@ -92,8 +92,8 @@ class SpotifyAPI():
             return playlists
         except KeyError as e:
             if 'error' in response:
-                exit(str.format("Error getting user's playlists\n{}: {}", str(response['error']['status']),
-                                response['error']['message']))
+                raise KeyError("Error getting user's playlists\n{}: {}", str(response['error']['status']),
+                                response['error']['message'])
             raise e
 
     def getNumberOfTracks(self, playlist):
