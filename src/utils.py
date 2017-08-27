@@ -1,21 +1,18 @@
-import json
-import requests
-import untangle
+from json import loads as parseJson
+from requests import request, Request
+from untangle import parse as parseXml
 
 
-def postResponse(url, params, headers):
-    response = requests.post(url, headers, params)
-    return response.content.decode('utf-8')
+def httpRequest(url, params, headers, method='get', responseFormat='json'):
+    formatMapping = {'json': parseJson, 'xml': parseXml, None: None}
 
+    if responseFormat not in formatMapping.keys():
+        raise ValueError("Unknown format " + responseFormat)
 
-def _getResponse(url, params, headers):
-    response = requests.get(url, headers=headers, params=params)
-    return response.content.decode('utf-8')
+    response = request(method, url=url, headers=headers, params=params)
+    if responseFormat is None:
+        return response
+    return formatMapping[responseFormat.lower()](response.content.decode('utf-8'))
 
-
-def getJSONResponse(url, params, headers):
-    return json.loads(_getResponse(url, params, headers))
-
-
-def getXMLResponse(url, params, headers):
-    return untangle.parse(_getResponse(url, params, headers))
+def buildUrl(url, params, headers, method='get'):
+    return Request(method, url, params=params, headers=headers).prepare().url
