@@ -141,7 +141,7 @@ class SpotifyAPI():
                         'title': track['name'],
                         'spotifyID': track['id'],
                         'artists': [artist['name'] for artist in track['artists']],
-                        'albumArt': track['album']['images'][0]['url']
+                        'albumArt': SpotifyAPI.extractAlbumArt(track)
                     }
                     unplayableTracks.append(trackInfo)
                     if not silent:
@@ -160,6 +160,13 @@ class SpotifyAPI():
     @staticmethod
     def extractTitle(track):
         return normalize(track['name'])
+
+    @staticmethod
+    def extractAlbumArt(track):
+        try:
+            return track['album']['images'][0]['url']
+        except IndexError:
+            return ""
 
     @staticmethod
     def getDuplicateTracks(tracks, silent=True):
@@ -202,7 +209,7 @@ class SpotifyAPI():
                         'title': track['name'],
                         'spotifyID': track['id'],
                         'artists': [artist['name'] for artist in track['artists']],
-                        'albumArt': track['album']['images'][0]['url'],
+                        'albumArt': SpotifyAPI.extractAlbumArt(track),
                         'added_at': track['added_at'],
                         'preview_url': track['preview_url'],
                         'index': track['index'],
@@ -236,7 +243,3 @@ def normalize(string):
         string = string.strip()
     string = re.sub('\W|_', '', string)
     return string.lower()
-
-
-if __name__ == "__main__":
-    print(SpotifyAPI.extractTitle({'name': "(A) Test title £3-_-I'vegot a brand(explicit)  edit (version 2)"}))
