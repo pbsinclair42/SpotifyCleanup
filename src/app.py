@@ -20,7 +20,7 @@ def forUser():
 def getDeadSongs():
     id = request.args['id']
     owner = request.args['owner']
-    name = request.args['owner']
+    name = request.args['name']
     playlist = {'id': id, 'owner': owner, 'name': name}
     api.getPlaylistInfo(playlist)
     return render_template("deadsongs.html", playlist=playlist)
