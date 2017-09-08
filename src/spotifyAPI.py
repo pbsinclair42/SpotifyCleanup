@@ -228,16 +228,16 @@ class SpotifyAPI():
         return playlist
 
 
-def removeTrackFromPlaylist(self, trackId, playlist, index):
-    url = self.BASEURL + "users/" + playlist['owner'] + "/playlists/" + playlist['id'] + "/tracks"
-    params = {"tracks": [{
-        'positions': [index],
-        'uri': "spotify:track:" + trackId
-    }]}
-    headers = self.STANDARD_HEADERS
-    headers['Content-Type'] = "application/json"
-    headers['Accept'] = "application/json"
-    return httpRequest(url, params, headers, method="delete")
+    def removeTrackFromPlaylist(self, trackId, playlistId, index):
+        url = self.BASEURL + "users/" + self.userDetails["id"] + "/playlists/" + playlistId + "/tracks"
+        data = {"tracks": [{
+            'positions': [int(index)],
+            'uri': "spotify:track:" + trackId
+        }]}
+        headers = self.STANDARD_HEADERS
+        headers['Content-Type'] = "application/json"
+        headers['Accept'] = "application/json"
+        return httpRequest(url, {}, headers, method="delete", data=data)
 
 
 def _millisecondsToString(ms):
