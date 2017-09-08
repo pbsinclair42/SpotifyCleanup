@@ -1,0 +1,60 @@
+{% raw %}
+<style>
+  .track {
+    width: fit-content;
+    display: inline-block;
+  }
+  .track > .albumArt {
+    width: 150px;
+    padding: 10px;
+  }
+  .track > .trackDetails {
+    vertical-align: top;
+    padding: 20px 10px 20px 0;
+    flex-direction: column;
+    justify-content: space-between;
+    display: inline-flex;
+    height: 130px;
+    max-width: 150px;
+  }
+  .track > .trackDetails > p {
+    margin: 0;
+  }
+</style>
+<script id="trackTemplate" type="text/x-handlebars-template">
+  <div class="track" id="{{ trackId }}-{{ index }}">
+    <img src="{{ albumArt }}" class="albumArt">
+    <div class="trackDetails">
+      <p class="title">{{ title }}</p>
+      <p class="artists">{{ artists }}</p>
+      <p class="duration">{{ duration }}</p>
+      <p class="added_at">{{ added_at }}</p>
+    </div>
+    <audio id="{{ trackId }}-{{ index }}-audio" class="trackPreview">
+      <source
+        src="https://p.scdn.co/mp3-preview/77b0a08e408cea5b752ab2896bc59de537e8f368?cid=56ec1ebecde8417abe1b020a3dd797de"
+        type="audio/ogg">
+    </audio>
+  </div>
+  <script>
+    if (typeof(volume) != "undefined") {
+      $('#{{ trackId }}-{{ index }}-audio').volume = volume;
+    }
+    $('#{{ trackId }}-{{ index }} .albumArt').click(function(){
+      var audioDiv = $('#{{ trackId }}-{{ index }}-audio').get(0);
+      if (audioDiv.paused) {
+        $('.trackPreview').each(function(index){
+          if (!this.paused) {
+            this.pause();
+            this.currentTime = 0;
+          }
+        });
+        audioDiv.play();
+      } else {
+        audioDiv.pause();
+        audioDiv.currentTime = 0;
+      }
+    });
+</script{{ undefined }}>
+</script>
+{% endraw %}
