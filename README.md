@@ -22,3 +22,7 @@ Spotify Cleanup allows you to easily fix your Spotify playlists, including de-du
     ```
     python -m flask run
     ```
+
+## Collaborating:
+
+Feel free to raise a new issue for any new feature or bug you've spotted.  Pull requests are also welcomed if you're interested in directly improving the project.
