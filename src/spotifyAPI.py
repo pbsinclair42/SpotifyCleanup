@@ -138,15 +138,7 @@ class SpotifyAPI:
         for track in tracks:
             try:
                 if not track['is_playable']:
-                    trackInfo = {
-                        'title': track['name'],
-                        'spotifyID': track['id'],
-                        'artists': ', '.join([artist['name'] for artist in track['artists']]),
-                        'albumArt': SpotifyAPI.extractAlbumArt(track),
-                        'duration': _millisecondsToString(track['duration_ms']),
-                        'added_at': track['added_at'],
-                        'preview_url': track['preview_url']
-                    }
+                    trackInfo = SpotifyAPI.extractTrackInfo(track)
                     unplayableTracks.append(trackInfo)
                     if not silent:
                         print(trackInfo)
@@ -156,6 +148,19 @@ class SpotifyAPI:
                     raise e
 
         return unplayableTracks
+
+    @staticmethod
+    def extractTrackInfo(track):
+        return {
+            'title': track['name'],
+            'spotifyID': track['id'],
+            'artists': ', '.join([artist['name'] for artist in track['artists']]),
+            'albumArt': SpotifyAPI.extractAlbumArt(track),
+            'duration': _millisecondsToString(track['duration_ms']),
+            'added_at': track['added_at'].split('T')[0] if track['added_at'] != None else "Unknown",
+            'index': track['index'],
+            'preview_url': track['preview_url']
+        }
 
     @staticmethod
     def extractArtists(track):
@@ -209,16 +214,7 @@ class SpotifyAPI:
                 subgroups = list(filter(lambda group: len(group) > 1, subgroups))
 
                 for group in subgroups:
-                    group = list(map(lambda track: {
-                        'title': track['name'],
-                        'spotifyID': track['id'],
-                        'artists': ', '.join([artist['name'] for artist in track['artists']]),
-                        'albumArt': SpotifyAPI.extractAlbumArt(track),
-                        'added_at': track['added_at'].split('T')[0] if track['added_at'] != "" else "Unknown",
-                        'preview_url': track['preview_url'],
-                        'index': track['index'],
-                        'duration': _millisecondsToString(track['duration_ms'])
-                    }, group))
+                    group = list(map(SpotifyAPI.extractTrackInfo, group))
                     duplicates.append(group)
                     if not silent:
                         print(group)

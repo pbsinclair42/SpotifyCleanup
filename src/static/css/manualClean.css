@@ -83,4 +83,8 @@ body {
 }
 .trackRow {
     white-space: nowrap;
+    border-bottom: #ccc solid 1px;
+}
+.trackRow:last-child {
+    border-bottom: none;
 }
