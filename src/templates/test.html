@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Spotify Cleanup</title>
+    <link rel="stylesheet" type="text/css" href="/css/test.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    {% include 'trackTemplate.html' %}
+  </head>
+
+  <body>
+    <h1 id="headline">Spotify Cleanup</h1>
+    <div class="mainContainer">
+      <ol class="playlistList">
+        <li class="playlistItem">Playlist 1</li>
+        <li class="playlistItem">Playlist 2</li>
+        <li class="playlistItem">Playlist 3</li>
+        <li class="playlistItem">Playlist 4</li>
+        <li class="playlistItem">Playlist 5</li>
+        <li class="playlistItem">Playlist 6</li>
+        <li class="playlistItem">Playlist 7</li>
+        <li class="playlistItem">Playlist 8</li>
+        <li class="playlistItem">Playlist 9</li>
+        <li class="playlistItem">Playlist 10</li>
+        <li class="playlistItem">Playlist 11</li>
+        <li class="playlistItem">Playlist 12</li>
+        <li class="playlistItem">Playlist 13</li>
+        <li class="playlistItem">Playlist 14</li>
+        <li class="playlistItem">Playlist 15</li>
+      </ol>
+      <div class="otherContainer">
+        <div class="tabs">
+          <div id="duplicates" class="tab">Duplicates</div>
+          <div id="deads" class="tab">Dead Tracks</div>
+        </div>
+        <div class="tracksDisplay">
+          <div class="trackRow">
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/js/test.js"></script>
+  </body>
+</html>

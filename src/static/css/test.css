@@ -1,0 +1,71 @@
+#headline {
+    text-align: center;
+}
+body {
+    margin: 0;
+}
+.mainContainer {
+    display: flex;
+    border: 2px solid #ccc;
+    max-height: 80vh;
+    width: 95vw;
+    margin: 0 auto;
+}
+.playlistList {
+    min-width: 15vw;
+    max-width: 25vw;
+    overflow: auto;
+    border-right: 2px solid #ccc;
+    padding: 0;
+    margin: 0;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    flex-grow: 1;
+}
+.playlistItem {
+    padding: 10px 20px 10px 10px;
+    border-bottom: 1px solid #ccc;
+    list-style: none;
+}
+.playlistItem:last-child {
+    border-bottom: none;
+}
+.otherContainer {
+    flex-grow: 5;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+.tabs {
+    display: flex;
+    margin-bottom: 10px;
+}
+.tab {
+    flex-grow: 1;
+    text-align: center;
+    background-color: #eeeeee;
+    transition: background-color .1s;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    border: solid #ccc;
+    border-width: 0 1px 1px 0;
+}
+.tab:last-child {
+    border-right: none;
+}
+.tab:hover {
+    background-color: #e2e2e2;
+}
+.tab.selected {
+    background-color: #ccc;
+}
+.tracksDisplay {
+    overflow: auto;
+    max-width: 100%;
+    min-width: 0;
+    flex-grow: 1;
+}
+.trackRow {
+    white-space: nowrap;
+}
