@@ -1,7 +1,6 @@
 {% raw %}
 <style>
   .track {
-    width: fit-content;
     display: inline-block;
   }
   .track > .albumArt {
@@ -23,12 +22,12 @@
 </style>
 <script id="trackTemplate" type="text/x-handlebars-template">
   <div class="track" id="{{ trackId }}-{{ index }}">
-    <img src="{{ albumArt }}" class="albumArt">
+    <img src="{{ albumArt }}" class="albumArt" title="{{ album }}">
     <div class="trackDetails">
-      <p class="title">{{ title }}</p>
-      <p class="artists">{{ artists }}</p>
-      <p class="duration">{{ duration }}</p>
-      <p class="added_at">{{ added_at }}</p>
+      <p class="title" title="Title">{{ title }}</p>
+      <p class="artists" title="Artists">{{ artists }}</p>
+      <p class="duration" title="Duration">{{ duration }}</p>
+      <p class="added_at" title="Date Added">{{ added_at }}</p>
     </div>
     <audio id="{{ trackId }}-{{ index }}-audio" class="trackPreview">
       <source
