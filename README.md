@@ -1,7 +1,7 @@
 # Spotify Cleanup
 
 ## What is it?
-Spotify Cleanup allows you to easily fix your Spotify playlists, including de-duping songs, replacing dead tracks, and more!
+Spotify Cleanup allows you to easily fix your Spotify playlists by de-duping songs and replacing dead tracks.
 
 ## To run:
 
