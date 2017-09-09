@@ -11,7 +11,7 @@ api = SpotifyAPI(CLIENT_ID, CLIENT_SECRET)
 def manualClean():
     try:
         playlists = api.getPlaylists()
-        return render_template("test.html", username=api.userDetails.username, playlists=playlists)
+        return render_template("manualClean.html", username=api.userDetails.username, playlists=playlists)
     except KeyError:
         return "Error: Unknown username"
 
