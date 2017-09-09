@@ -16,24 +16,14 @@ def manualClean():
         return "Error: Unknown username"
 
 
-@app.route('/deads/')
-def getDeadSongs():
+@app.route('/getCleanupData/')
+def getCleanupData():
     id = request.args['playlistId']
     owner = request.args['owner']
     name = request.args['playlistName']
     playlist = {'id': id, 'owner': owner, 'name': name}
     api.getPlaylistInfo(playlist)
-    return json.dumps(playlist['unplayableTracks'])
-
-
-@app.route('/duplicates/')
-def getDuplicates():
-    id = request.args['playlistId']
-    owner = request.args['owner']
-    name = request.args['playlistName']
-    playlist = {'id': id, 'owner': owner, 'name': name}
-    api.getPlaylistInfo(playlist)
-    return json.dumps(playlist['duplicateTracks'])
+    return json.dumps(playlist)
 
 
 @app.route('/authenticate')

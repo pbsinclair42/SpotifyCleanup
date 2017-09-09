@@ -1,5 +1,6 @@
 var BASE_URL = "http://localhost:5000/";
 var lastHttpRequest;
+var playlistCache = {};
 
 function httpGetAsync(theUrl, callback){
   var xmlHttp = new XMLHttpRequest();
@@ -15,15 +16,6 @@ function httpGetAsync(theUrl, callback){
 function createTrack(context){
   var source = $("#trackTemplate").html();
   var template = Handlebars.compile(source);
-  try {
-    context['added_at'] = context['added_at'].split('T')[0];
-  } catch (TypeError) {
-    context['added_at'] = "Unknown"
-  }
-  if (!context['albumArt']) {
-    context['albumArt'] = "http://i1156.photobucket.com/albums/p580/keca-pooh22/albumart_mp_unknown.png"
-  }
-  context['artists'] = context['artists'].join(', ');
   return template(context).trim();
 }
 
@@ -56,31 +48,33 @@ function makeSelectable(selector, onNewClick){
   });
 }
 
-function loadDuplicates(currentPlaylist){
-  if (lastHttpRequest !== undefined) {
-    console.log(lastHttpRequest);
-    lastHttpRequest.abort();
-  }
+function loadDuplicates(data){
   var tracksDisplay = $('.tracksDisplay');
   tracksDisplay.empty();
-  $(createLoadingGif('playlistLoading')).appendTo(tracksDisplay);
-  url = BASE_URL + "duplicates/?playlistId=" + currentPlaylist.id + "&playlistName=" + currentPlaylist.innerHTML + "&owner=" + currentPlaylist.owner;
-  lastHttpRequest = httpGetAsync(url, function(data){
-    $('.tracksDisplay').empty();
-    $('#playlistLoading').remove();
-    data = JSON.parse(data);
-    console.log(data);
-    if (data.length === 0) {
-      $("<div class='emptyTracksInfoBox'>No duplicates found!</div>").appendTo(tracksDisplay);
-    } else {
-      data.forEach(function(tracks, i){
-        $(createTrackRow(tracks)).appendTo(tracksDisplay);
-      });
-    }
-  });
+  var duplicateTracks = data['duplicateTracks'];
+  if (duplicateTracks.length === 0) {
+    $("<div class='emptyTracksInfoBox'>No duplicates found!</div>").appendTo(tracksDisplay);
+  } else {
+    duplicateTracks.forEach(function(tracks, i){
+      $(createTrackRow(tracks)).appendTo(tracksDisplay);
+    });
+  }
 }
 
-function loadDeads(currentPlaylist){
+function loadDeads(data){
+  var tracksDisplay = $('.tracksDisplay');
+  tracksDisplay.empty();
+  var unplayableTracks = data['unplayableTracks'];
+  if (unplayableTracks.length === 0) {
+    $("<div class='emptyTracksInfoBox'>No dead tracks found!</div>").appendTo(tracksDisplay);
+  } else {
+    unplayableTracks.forEach(function(tracks, i){
+      $(createTrackRow([tracks])).appendTo(tracksDisplay);
+    });
+  }
+}
+
+function load(currentPlaylist, callback){
   if (lastHttpRequest !== undefined) {
     console.log(lastHttpRequest);
     lastHttpRequest.abort();
@@ -88,26 +82,23 @@ function loadDeads(currentPlaylist){
   var tracksDisplay = $('.tracksDisplay');
   tracksDisplay.empty();
   $(createLoadingGif('playlistLoading')).appendTo(tracksDisplay);
-  url = BASE_URL + "deads/?playlistId=" + currentPlaylist.id + "&playlistName=" + currentPlaylist.innerHTML + "&owner=" + currentPlaylist.owner;
-  lastHttpRequest = httpGetAsync(url, function(data){
-    $('.tracksDisplay').empty();
-    $('#playlistLoading').remove();
-    data = JSON.parse(data);
-    console.log(data);
-    if (data.length === 0) {
-      $("<div class='emptyTracksInfoBox'>No dead tracks found!</div>").appendTo(tracksDisplay);
-    } else {
-      data.forEach(function(tracks, i){
-        $(createTrackRow([tracks])).appendTo(tracksDisplay);
-      });
-    }
-  });
+  if (playlistCache[currentPlaylist.id] !== undefined) {
+    callback(playlistCache[currentPlaylist.id]);
+  } else {
+    var url = BASE_URL + "getCleanupData/?playlistId=" + currentPlaylist.id + "&playlistName=" + currentPlaylist.innerHTML + "&owner=" + currentPlaylist.owner;
+    lastHttpRequest = httpGetAsync(url, function(data){
+      data = JSON.parse(data);
+      playlistCache[currentPlaylist.id] = data;
+      callback(data);
+    });
+  }
 }
+
 
 function loadDuplicatesOrDeads(){
   try {
-    currentPlaylistTab = $('.playlistItem.selected')[0];
-    currentPlaylist = {
+    var currentPlaylistTab = $('.playlistItem.selected')[0];
+    var currentPlaylist = {
       'id':currentPlaylistTab.id,
       'name':currentPlaylistTab.innerHTML,
       'owner':currentPlaylistTab.getAttribute("owner")
@@ -116,13 +107,13 @@ function loadDuplicatesOrDeads(){
     // no playlist yet selected
     return;
   }
-  currentTab = $('.tab.selected')[0].id;
+  var currentTab = $('.tab.selected')[0].id;
   switch (currentTab) {
     case "duplicates":
-      loadDuplicates(currentPlaylist);
+      load(currentPlaylist, loadDuplicates);
       break;
     case "deads":
-      loadDeads(currentPlaylist);
+      load(currentPlaylist, loadDeads);
       break;
     default:
       console.error("Unknown tab type: " + currentTab);

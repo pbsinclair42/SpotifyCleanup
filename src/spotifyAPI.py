@@ -141,7 +141,7 @@ class SpotifyAPI:
                     trackInfo = {
                         'title': track['name'],
                         'spotifyID': track['id'],
-                        'artists': [artist['name'] for artist in track['artists']],
+                        'artists': ', '.join([artist['name'] for artist in track['artists']]),
                         'albumArt': SpotifyAPI.extractAlbumArt(track),
                         'duration': _millisecondsToString(track['duration_ms']),
                         'added_at': track['added_at'],
@@ -170,7 +170,7 @@ class SpotifyAPI:
         try:
             return track['album']['images'][0]['url']
         except IndexError:
-            return ""
+            return "http://i1156.photobucket.com/albums/p580/keca-pooh22/albumart_mp_unknown.png"
 
     @staticmethod
     def getDuplicateTracks(tracks, silent=True):
@@ -212,9 +212,9 @@ class SpotifyAPI:
                     group = list(map(lambda track: {
                         'title': track['name'],
                         'spotifyID': track['id'],
-                        'artists': [artist['name'] for artist in track['artists']],
+                        'artists': ', '.join([artist['name'] for artist in track['artists']]),
                         'albumArt': SpotifyAPI.extractAlbumArt(track),
-                        'added_at': track['added_at'],
+                        'added_at': track['added_at'].split('T')[0] if track['added_at'] != "" else "Unknown",
                         'preview_url': track['preview_url'],
                         'index': track['index'],
                         'duration': _millisecondsToString(track['duration_ms'])
