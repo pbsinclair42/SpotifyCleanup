@@ -1,4 +1,5 @@
-BASE_URL = "http://localhost:5000/";
+var BASE_URL = "http://localhost:5000/";
+var lastHttpRequest;
 
 function httpGetAsync(theUrl, callback){
   var xmlHttp = new XMLHttpRequest();
@@ -8,6 +9,7 @@ function httpGetAsync(theUrl, callback){
   };
   xmlHttp.open("GET", theUrl, true); // true for asynchronous
   xmlHttp.send(null);
+  return xmlHttp
 }
 
 function createTrack(context){
@@ -57,11 +59,16 @@ function makeSelectable(selector, onNewClick){
 $(function(){
 
   makeSelectable(".playlistItem", function(playlistItem){
+    if (lastHttpRequest !== undefined) {
+      console.log(lastHttpRequest);
+      lastHttpRequest.abort();
+    }
     var tracksDisplay = $('.tracksDisplay');
     tracksDisplay.empty();
     $(createLoadingGif('playlistLoading')).appendTo(tracksDisplay);
     url = BASE_URL + "duplicates/?playlistId=" + playlistItem.id + "&playlistName=" + playlistItem.innerHTML + "&owner=" + playlistItem.getAttribute("owner");
-    httpGetAsync(url, function(data){
+    lastHttpRequest = httpGetAsync(url, function(data){
+      $('.tracksDisplay').empty();
       $('#playlistLoading').remove();
       data = JSON.parse(data);
       console.log(data);
