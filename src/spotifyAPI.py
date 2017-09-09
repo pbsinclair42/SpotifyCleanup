@@ -7,7 +7,7 @@ from math import isclose
 from statistics import mean
 
 
-class SpotifyAPI():
+class SpotifyAPI:
     MARKET = "GB"
     BASEURL = "https://api.spotify.com/v1/"
     DURATION_LEEWAY = 10000
@@ -35,7 +35,6 @@ class SpotifyAPI():
                 "playlist-modify-public",
                 "playlist-modify-private"
             ])
-
         }
         return buildUrl(url, params, {}, method="get")
 
@@ -145,7 +144,8 @@ class SpotifyAPI():
                         'artists': [artist['name'] for artist in track['artists']],
                         'albumArt': SpotifyAPI.extractAlbumArt(track),
                         'duration': _millisecondsToString(track['duration_ms']),
-                        'added_at': track['added_at']
+                        'added_at': track['added_at'],
+                        'preview_url': track['preview_url']
                     }
                     unplayableTracks.append(trackInfo)
                     if not silent:
@@ -260,7 +260,7 @@ def normalize(string):
     return string.lower()
 
 
-class UserDetails():
+class UserDetails:
     def __init__(self, d):
         self.username = d['id']
         self.displayName = d['display_name']

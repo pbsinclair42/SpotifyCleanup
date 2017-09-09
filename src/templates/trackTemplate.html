@@ -24,7 +24,7 @@
   }
 </style>
 <script id="trackTemplate" type="text/x-handlebars-template">
-  <div class="track" id="{{ trackId }}-{{ index }}">
+  <div class="track" id="{{ spotifyID }}-{{ index }}">
     <img src="{{ albumArt }}" class="albumArt" title="{{ album }}">
     <div class="trackDetails">
       <p class="title" title="Title">{{ title }}</p>
@@ -32,18 +32,18 @@
       <p class="duration" title="Duration">{{ duration }}</p>
       <p class="added_at" title="Date Added">{{ added_at }}</p>
     </div>
-    <audio id="{{ trackId }}-{{ index }}-audio" class="trackPreview">
+    <audio id="{{ spotifyID }}-{{ index }}-audio" class="trackPreview">
       <source
-        src="https://p.scdn.co/mp3-preview/77b0a08e408cea5b752ab2896bc59de537e8f368?cid=56ec1ebecde8417abe1b020a3dd797de"
+        src="{{ preview_url }}"
         type="audio/ogg">
     </audio>
   </div>
   <script>
     if (typeof(volume) != "undefined") {
-      $('#{{ trackId }}-{{ index }}-audio').volume = volume;
+      $('#{{ spotifyID }}-{{ index }}-audio').volume = volume;
     }
-    $('#{{ trackId }}-{{ index }} .albumArt').click(function(){
-      var audioDiv = $('#{{ trackId }}-{{ index }}-audio').get(0);
+    $('#{{ spotifyID }}-{{ index }} .albumArt').click(function(){
+      var audioDiv = $('#{{ spotifyID }}-{{ index }}-audio').get(0);
       if (audioDiv.paused) {
         $('.trackPreview').each(function(index){
           if (!this.paused) {
