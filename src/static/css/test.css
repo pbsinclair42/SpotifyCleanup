@@ -35,6 +35,9 @@ body {
 .playlistItem:hover {
     background-color: #eee;
 }
+.playlistItem.selected {
+    background-color: #ddd;
+}
 .emptyTracksInfoBox {
     text-align: center;
     font-size: 25px;
@@ -61,6 +64,7 @@ body {
     font-weight: bold;
     border: solid #ccc;
     border-width: 0 1px 1px 0;
+    cursor: pointer;
 }
 .tab:last-child {
     border-right: none;
@@ -69,7 +73,7 @@ body {
     background-color: #e2e2e2;
 }
 .tab.selected {
-    background-color: #ccc;
+    background-color: #ddd;
 }
 .tracksDisplay {
     overflow: auto;

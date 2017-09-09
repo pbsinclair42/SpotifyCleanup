@@ -1,4 +1,5 @@
 BASE_URL = "http://localhost:5000/";
+
 function httpGetAsync(theUrl, callback){
   var xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = function(){
@@ -32,6 +33,7 @@ function createTrackRow(tracks){
   trackRow += "</div>";
   return trackRow;
 }
+
 function createLoadingGif(id){
   var source = $("#loadingGifTemplate").html();
   var template = Handlebars.compile(source);
@@ -41,12 +43,24 @@ function createLoadingGif(id){
   return template(context).trim();
 }
 
+function makeSelectable(selector, onNewClick){
+  $(selector).click(function(){
+    if ($(this).hasClass("selected")) {
+      return;
+    }
+    $(selector + '.selected').removeClass("selected");
+    $(this).addClass("selected");
+    onNewClick(this);
+  });
+}
+
 $(function(){
-  $('.playlistItem').click(function(){
+
+  makeSelectable(".playlistItem", function(playlistItem){
     var tracksDisplay = $('.tracksDisplay');
     tracksDisplay.empty();
     $(createLoadingGif('playlistLoading')).appendTo(tracksDisplay);
-    url = BASE_URL + "duplicates/?playlistId=" + this.id + "&playlistName=" + this.innerHTML + "&owner=" + this.getAttribute("owner");
+    url = BASE_URL + "duplicates/?playlistId=" + playlistItem.id + "&playlistName=" + playlistItem.innerHTML + "&owner=" + playlistItem.getAttribute("owner");
     httpGetAsync(url, function(data){
       $('#playlistLoading').remove();
       data = JSON.parse(data);
@@ -58,11 +72,12 @@ $(function(){
           $(createTrackRow(tracks)).appendTo(tracksDisplay);
         });
       }
-    })
+    });
+  });
+
+  makeSelectable(".tab", function(tab){
+    //TODO
   });
 
   $('#duplicates').click();
 });
-
-//$(createTrack("1+1", "Scouting For Girls", "2:48", "2017-12-02", "Everybody Wants To Be On TV", "https://i.scdn.co/image/f00ff9ba4dcd76b344b8fd3fbccd4d507437dcc6", "asdf", 0)).appendTo($('.trackRow'));
-//$(createTrack("1+1", "Scouting For Girls", "2:48", "2017-12-02", "Everybody Wants To Be On TV", "https://i.scdn.co/image/f00ff9ba4dcd76b344b8fd3fbccd4d507437dcc6", "asdf", 1)).appendTo($('.trackRow'));
