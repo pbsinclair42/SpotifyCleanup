@@ -1,5 +1,5 @@
 {% raw %}
-<style>
+<style type="text/css">
   .track {
     display: inline-block;
   }
@@ -9,15 +9,18 @@
   }
   .track > .trackDetails {
     vertical-align: top;
-    padding: 20px 10px 20px 0;
+    padding: 10px 10px 10px 0;
     flex-direction: column;
     justify-content: space-between;
     display: inline-flex;
-    height: 130px;
-    max-width: 150px;
+    min-height: 150px;
+    width: 150px;
   }
   .track > .trackDetails > p {
     margin: 0;
+    overflow-wrap: break-word;
+    white-space: normal;
+    padding: 4px 0;
   }
 </style>
 <script id="trackTemplate" type="text/x-handlebars-template">
