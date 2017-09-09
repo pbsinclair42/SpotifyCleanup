@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from spotifyAPI import SpotifyAPI
 from secrets import CLIENT_ID, CLIENT_SECRET
+import json
 
 app = Flask(__name__, static_url_path='')
 api = SpotifyAPI(CLIENT_ID, CLIENT_SECRET)
@@ -15,14 +16,14 @@ def manualClean():
         return "Error: Unknown username"
 
 
-@app.route('/getDeadSongs/')
+@app.route('/deads/')
 def getDeadSongs():
-    id = request.args['id']
+    id = request.args['playlistId']
     owner = request.args['owner']
-    name = request.args['name']
+    name = request.args['playlistName']
     playlist = {'id': id, 'owner': owner, 'name': name}
     api.getPlaylistInfo(playlist)
-    return render_template("deadsongs.html", playlist=playlist)
+    return json.dumps(playlist['unplayableTracks'])
 
 
 @app.route('/duplicates/')

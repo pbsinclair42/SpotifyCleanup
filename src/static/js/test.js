@@ -56,35 +56,84 @@ function makeSelectable(selector, onNewClick){
   });
 }
 
+function loadDuplicates(currentPlaylist){
+  if (lastHttpRequest !== undefined) {
+    console.log(lastHttpRequest);
+    lastHttpRequest.abort();
+  }
+  var tracksDisplay = $('.tracksDisplay');
+  tracksDisplay.empty();
+  $(createLoadingGif('playlistLoading')).appendTo(tracksDisplay);
+  url = BASE_URL + "duplicates/?playlistId=" + currentPlaylist.id + "&playlistName=" + currentPlaylist.innerHTML + "&owner=" + currentPlaylist.owner;
+  lastHttpRequest = httpGetAsync(url, function(data){
+    $('.tracksDisplay').empty();
+    $('#playlistLoading').remove();
+    data = JSON.parse(data);
+    console.log(data);
+    if (data.length === 0) {
+      $("<div class='emptyTracksInfoBox'>No duplicates found!</div>").appendTo(tracksDisplay);
+    } else {
+      data.forEach(function(tracks, i){
+        $(createTrackRow(tracks)).appendTo(tracksDisplay);
+      });
+    }
+  });
+}
+
+function loadDeads(currentPlaylist){
+  if (lastHttpRequest !== undefined) {
+    console.log(lastHttpRequest);
+    lastHttpRequest.abort();
+  }
+  var tracksDisplay = $('.tracksDisplay');
+  tracksDisplay.empty();
+  $(createLoadingGif('playlistLoading')).appendTo(tracksDisplay);
+  url = BASE_URL + "deads/?playlistId=" + currentPlaylist.id + "&playlistName=" + currentPlaylist.innerHTML + "&owner=" + currentPlaylist.owner;
+  lastHttpRequest = httpGetAsync(url, function(data){
+    $('.tracksDisplay').empty();
+    $('#playlistLoading').remove();
+    data = JSON.parse(data);
+    console.log(data);
+    if (data.length === 0) {
+      $("<div class='emptyTracksInfoBox'>No dead tracks found!</div>").appendTo(tracksDisplay);
+    } else {
+      data.forEach(function(tracks, i){
+        $(createTrackRow([tracks])).appendTo(tracksDisplay);
+      });
+    }
+  });
+}
+
+function loadDuplicatesOrDeads(){
+  try {
+    currentPlaylistTab = $('.playlistItem.selected')[0];
+    currentPlaylist = {
+      'id':currentPlaylistTab.id,
+      'name':currentPlaylistTab.innerHTML,
+      'owner':currentPlaylistTab.getAttribute("owner")
+    };
+  } catch (TypeError) {
+    // no playlist yet selected
+    return;
+  }
+  currentTab = $('.tab.selected')[0].id;
+  switch (currentTab) {
+    case "duplicates":
+      loadDuplicates(currentPlaylist);
+      break;
+    case "deads":
+      loadDeads(currentPlaylist);
+      break;
+    default:
+      console.error("Unknown tab type: " + currentTab);
+  }
+}
+
 $(function(){
 
-  makeSelectable(".playlistItem", function(playlistItem){
-    if (lastHttpRequest !== undefined) {
-      console.log(lastHttpRequest);
-      lastHttpRequest.abort();
-    }
-    var tracksDisplay = $('.tracksDisplay');
-    tracksDisplay.empty();
-    $(createLoadingGif('playlistLoading')).appendTo(tracksDisplay);
-    url = BASE_URL + "duplicates/?playlistId=" + playlistItem.id + "&playlistName=" + playlistItem.innerHTML + "&owner=" + playlistItem.getAttribute("owner");
-    lastHttpRequest = httpGetAsync(url, function(data){
-      $('.tracksDisplay').empty();
-      $('#playlistLoading').remove();
-      data = JSON.parse(data);
-      console.log(data);
-      if (data.length === 0) {
-        $("<div class='emptyTracksInfoBox'>No duplicates found!</div>").appendTo(tracksDisplay);
-      } else {
-        data.forEach(function(tracks, i){
-          $(createTrackRow(tracks)).appendTo(tracksDisplay);
-        });
-      }
-    });
-  });
+  makeSelectable(".playlistItem", loadDuplicatesOrDeads);
 
-  makeSelectable(".tab", function(tab){
-    //TODO
-  });
+  makeSelectable(".tab", loadDuplicatesOrDeads);
 
   $('#duplicates').click();
 });

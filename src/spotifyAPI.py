@@ -143,7 +143,9 @@ class SpotifyAPI():
                         'title': track['name'],
                         'spotifyID': track['id'],
                         'artists': [artist['name'] for artist in track['artists']],
-                        'albumArt': SpotifyAPI.extractAlbumArt(track)
+                        'albumArt': SpotifyAPI.extractAlbumArt(track),
+                        'duration': _millisecondsToString(track['duration_ms']),
+                        'added_at': track['added_at']
                     }
                     unplayableTracks.append(trackInfo)
                     if not silent:
