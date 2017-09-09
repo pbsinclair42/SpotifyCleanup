@@ -75,9 +75,11 @@ class SpotifyAPI():
         url = self.BASEURL + "me"
         headers = self.STANDARD_HEADERS
         response = httpRequest(url, {}, headers)
-        self.userDetails = response
+        self.userDetails = UserDetails(response)
 
-    def getPlaylists(self, username="blackcat0030"):
+    def getPlaylists(self, username=None):
+        if username is None:
+            username = self.userDetails.username
         url = self.BASEURL + "users/" + username + "/playlists"
         params = {"limit": 50, "offset": 0}
         headers = self.STANDARD_HEADERS
@@ -93,7 +95,7 @@ class SpotifyAPI():
         except KeyError as e:
             if 'error' in response:
                 raise KeyError("Error getting user's playlists\n{}: {}", str(response['error']['status']),
-                                response['error']['message'])
+                               response['error']['message'])
             raise e
 
     def getNumberOfTracks(self, playlist):
@@ -227,7 +229,6 @@ class SpotifyAPI():
         playlist['duplicateTracks'] = self.getDuplicateTracks(tracks, silent=silent)
         return playlist
 
-
     def removeTrackFromPlaylist(self, trackId, playlistId, index):
         url = self.BASEURL + "users/" + self.userDetails["id"] + "/playlists/" + playlistId + "/tracks"
         data = {"tracks": [{
@@ -255,3 +256,11 @@ def normalize(string):
         string = string.strip()
     string = re.sub('\W|_', '', string)
     return string.lower()
+
+
+class UserDetails():
+    def __init__(self, d):
+        self.username = d['id']
+        self.displayName = d['display_name']
+        self.url = d['external_urls']['spotify']
+        self.img = d['images'][0]['url']

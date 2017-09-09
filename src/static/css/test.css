@@ -23,12 +23,22 @@ body {
     flex-grow: 1;
 }
 .playlistItem {
-    padding: 10px 20px 10px 10px;
+    padding: 10px;
     border-bottom: 1px solid #ccc;
     list-style: none;
+    cursor: pointer;
+    transition: background-color 0.05s;
 }
 .playlistItem:last-child {
     border-bottom: none;
+}
+.playlistItem:hover {
+    background-color: #eee;
+}
+.emptyTracksInfoBox {
+    text-align: center;
+    font-size: 25px;
+    margin: 20px 0 0;
 }
 .otherContainer {
     flex-grow: 5;
@@ -39,6 +49,7 @@ body {
 .tabs {
     display: flex;
     margin-bottom: 10px;
+    min-height: fit-content;
 }
 .tab {
     flex-grow: 1;

@@ -6,12 +6,11 @@ app = Flask(__name__, static_url_path='')
 api = SpotifyAPI(CLIENT_ID, CLIENT_SECRET)
 
 
-@app.route('/user/')
-def forUser():
+@app.route('/manualClean/')
+def manualClean():
     try:
-        username = request.args['username']
-        playlists = api.getPlaylists(username)
-        return render_template("playlists.html", username=username, playlists=playlists)
+        playlists = api.getPlaylists()
+        return render_template("test.html", username=api.userDetails.username, playlists=playlists)
     except KeyError:
         return "Error: Unknown username"
 
@@ -24,6 +23,16 @@ def getDeadSongs():
     playlist = {'id': id, 'owner': owner, 'name': name}
     api.getPlaylistInfo(playlist)
     return render_template("deadsongs.html", playlist=playlist)
+
+
+@app.route('/duplicates/')
+def getDuplicates():
+    id = request.args['playlistId']
+    owner = request.args['owner']
+    name = request.args['playlistName']
+    playlist = {'id': id, 'owner': owner, 'name': name}
+    api.getPlaylistInfo(playlist)
+    return json.dumps(playlist['duplicateTracks'])
 
 
 @app.route('/authenticate')
@@ -46,7 +55,7 @@ def continueAuthentication():
         except Exception as e:
             print(e)
             return "Authentication failed"
-        return redirect("/user/?username=" + api.userDetails['id'])
+        return redirect("/manualClean/")
     else:
         # Access Denied
         error = request.args['error']
