@@ -12,8 +12,8 @@ def manualClean():
     try:
         playlists = api.getPlaylists()
         return render_template("manualClean.html", username=api.userDetails.username, playlists=playlists)
-    except KeyError:
-        return "Error: Unknown username"
+    except AttributeError:
+        return redirect('/authenticate')
 
 
 @app.route('/getCleanupData/')
