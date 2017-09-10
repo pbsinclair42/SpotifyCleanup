@@ -13,12 +13,6 @@ function httpGetAsync(theUrl, callback){
   return xmlHttp
 }
 
-function createTrack(context){
-  var source = $("#trackTemplate").html();
-  var template = Handlebars.compile(source);
-  return template(context).trim();
-}
-
 function createTrackRow(tracks){
   var trackRow = '<div class="trackRow">';
   tracks.forEach(function(track, i){
@@ -26,15 +20,6 @@ function createTrackRow(tracks){
   });
   trackRow += "</div>";
   return trackRow;
-}
-
-function createLoadingGif(id){
-  var source = $("#loadingGifTemplate").html();
-  var template = Handlebars.compile(source);
-  var context = {
-    id:id || ""
-  };
-  return template(context).trim();
 }
 
 function makeSelectable(selector, onNewClick){

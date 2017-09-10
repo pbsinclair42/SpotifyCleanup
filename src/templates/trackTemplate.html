@@ -23,6 +23,13 @@
     padding: 4px 0;
   }
 </style>
+<script>
+  function createTrack(context){
+    var source = $("#trackTemplate").html();
+    var template = Handlebars.compile(source);
+    return template(context).trim();
+  }
+</script>
 <script id="trackTemplate" type="text/x-handlebars-template">
   <div class="track" id="{{ spotifyID }}-{{ index }}">
     <img src="{{ albumArt }}" class="albumArt" title="{{ album }}">

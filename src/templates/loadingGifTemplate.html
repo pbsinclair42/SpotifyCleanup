@@ -7,6 +7,16 @@
     display: block;
   }
 </style>
+<script>
+  function createLoadingGif(id){
+    var source = $("#loadingGifTemplate").html();
+    var template = Handlebars.compile(source);
+    var context = {
+      id:id || ""
+    };
+    return template(context).trim();
+  }
+</script>
 <script id="loadingGifTemplate" type="text/x-handlebars-template">
   <img class='loadingGif' src='/images/loading.gif' id="{{ id }}">
 </script>
