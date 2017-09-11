@@ -47,7 +47,10 @@
   </div>
   <script>
     if (typeof(volume) != "undefined") {
-      $('#{{ spotifyID }}-{{ index }}-audio').volume = volume;
+      $('#{{ spotifyID }}-{{ index }}-audio').get(0).volume = volume;
+    }
+    if (typeof(mute) != "undefined") {
+      $('#{{ spotifyID }}-{{ index }}-audio').get(0).muted = mute;
     }
     $('#{{ spotifyID }}-{{ index }} .albumArt').click(function(){
       var audioDiv = $('#{{ spotifyID }}-{{ index }}-audio').get(0);

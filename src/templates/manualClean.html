@@ -6,11 +6,13 @@
     <link rel="stylesheet" type="text/css" href="/css/manualClean.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     {% include 'templates.html' %}
   </head>
 
   <body>
     <h1 id="headline">Spotify Cleanup</h1>
+    <div class="volumeContainer"></div>
     <div class="mainContainer">
       <ol class="playlistList">
         {% for playlist in playlists %}

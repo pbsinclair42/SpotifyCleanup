@@ -79,7 +79,6 @@ function load(currentPlaylist, callback){
   }
 }
 
-
 function loadDuplicatesOrDeads(){
   try {
     var currentPlaylistTab = $('.playlistItem.selected')[0];
@@ -106,6 +105,7 @@ function loadDuplicatesOrDeads(){
 }
 
 $(function(){
+  $(createVolumeControl("globalVolumeControl", 10, 'body')).appendTo($('.volumeContainer'));
 
   makeSelectable(".playlistItem", loadDuplicatesOrDeads);
 

@@ -88,3 +88,8 @@ body {
 .trackRow:last-child {
     border-bottom: none;
 }
+.volumeContainer {
+    position: absolute;
+    right: calc(2.5vw - 50px);
+    top: 20px;
+}

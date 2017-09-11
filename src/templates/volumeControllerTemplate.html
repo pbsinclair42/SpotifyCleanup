@@ -1,0 +1,82 @@
+{% raw %}
+<style type="text/css">
+  .volumeController {
+    height: 30px;
+    font-size: 0;
+  }
+  .volumeControllerBar {
+    background-color: #eee;
+    height: 30px;
+    width: 5px;
+    padding: 5px 3px;
+    background-clip: content-box;
+    display: inline-block;
+  }
+  .volumeControllerBar.on {
+    background-color: #aaa;
+  }
+  .volumeControllerBar:last-child {
+    padding-right: 50px;
+  }
+  .volumeController > .sound-icon {
+    font-size: 30px;
+    vertical-align: top;
+    margin-top: 5px;
+  }
+</style>
+<script>
+  var volume = 1;
+  var mute = false;
+
+  function createVolumeControl(id, length, scope){
+    var source = $("#volumeTemplate").html();
+    var template = Handlebars.compile(source);
+    var volumes = [];
+    for (var i = 1; i <= length; i++) {
+      volumes.push(i / length);
+    }
+    var context = {'id':id, 'scope':scope, 'volumes':volumes};
+    console.log(context);
+
+    return template(context).trim();
+  }
+</script>
+<script id="volumeTemplate" type="text/x-handlebars-template">
+  <div id={{ id }} class="volumeController">
+    <i class="material-icons sound-icon">volume_up</i>
+    {{#each volumes}}
+    <div class="volumeControllerBar on" volume="{{ this }}"></div>
+    {{/each}}
+  </div>
+  <script>
+    $('#{{ id }} > .volumeControllerBar').click(function(){
+      $('#{{ id }} > .sound-icon').html("volume_up");
+      mute = false;
+      volume = parseFloat($(this).attr("volume"));
+      $('#{{ id }} > .volumeControllerBar').each(function(){
+        if (parseFloat($(this).attr("volume")) <= volume) {
+          $(this).addClass('on');
+        } else {
+          $(this).removeClass('on');
+        }
+      });
+      $('{{ scope }}' + ' audio').each(function(){
+        this.volume = volume;
+        this.muted = false;
+      })
+    });
+    $('#{{ id }} > .sound-icon').click(function(){
+      if (mute) {
+        $('.volumeControllerBar[volume="' + volume + '"]').click();
+      } else {
+        $(this).html("volume_off");
+        mute = true;
+        $('#{{ id }} > .volumeControllerBar').removeClass('on');
+        $('{{ scope }} audio').each(function(){
+          this.muted = true;
+        })
+      }
+    });
+</script{{ undefined }}>
+</script>
+{% endraw %}
