@@ -1,8 +1,15 @@
 {% raw %}
 <style type="text/css">
   .volumeController {
-    height: 30px;
+    height: 40px;
     font-size: 0;
+  }
+  .volumeControllerBars {
+    display: inline-block;
+    width: 0;
+    overflow: hidden;
+    transition: width 0.2s;
+    white-space: nowrap;
   }
   .volumeControllerBar {
     background-color: #eee;
@@ -35,7 +42,7 @@
     for (var i = 1; i <= length; i++) {
       volumes.push(i / length);
     }
-    var context = {'id':id, 'scope':scope, 'volumes':volumes};
+    var context = {'id':id, 'scope':scope, 'width':length * 11 + 47, 'volumes':volumes};
     console.log(context);
 
     return template(context).trim();
@@ -44,16 +51,18 @@
 <script id="volumeTemplate" type="text/x-handlebars-template">
   <div id={{ id }} class="volumeController">
     <i class="material-icons sound-icon">volume_up</i>
-    {{#each volumes}}
-    <div class="volumeControllerBar on" volume="{{ this }}"></div>
-    {{/each}}
+    <div class="volumeControllerBars">
+      {{#each volumes}}
+      <div class="volumeControllerBar on" volume="{{ this }}"></div>
+      {{/each}}
+    </div>
   </div>
   <script>
-    $('#{{ id }} > .volumeControllerBar').click(function(){
-      $('#{{ id }} > .sound-icon').html("volume_up");
+    $('#{{ id }} .volumeControllerBar').click(function(){
+      $('#{{ id }} .sound-icon').html("volume_up");
       mute = false;
       volume = parseFloat($(this).attr("volume"));
-      $('#{{ id }} > .volumeControllerBar').each(function(){
+      $('#{{ id }} .volumeControllerBar').each(function(){
         if (parseFloat($(this).attr("volume")) <= volume) {
           $(this).addClass('on');
         } else {
@@ -65,18 +74,24 @@
         this.muted = false;
       })
     });
-    $('#{{ id }} > .sound-icon').click(function(){
+    $('#{{ id }} .sound-icon').click(function(){
       if (mute) {
-        $('.volumeControllerBar[volume="' + volume + '"]').click();
+        $('#{{ id }} .volumeControllerBar[volume="' + volume + '"]').click();
       } else {
         $(this).html("volume_off");
         mute = true;
-        $('#{{ id }} > .volumeControllerBar').removeClass('on');
+        $('#{{ id }} .volumeControllerBar').removeClass('on');
         $('{{ scope }} audio').each(function(){
           this.muted = true;
         })
       }
     });
+    $('#{{ id }}').hover(function(){
+      $('#{{ id }} .volumeControllerBars').css({'width':'{{ width }}px'})
+    }, function(){
+      console.log('out')
+      $('#{{ id }} .volumeControllerBars').css({'width':'0'})
+    })
 </script{{ undefined }}>
 </script>
 {% endraw %}
