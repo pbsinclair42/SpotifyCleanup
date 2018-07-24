@@ -87,8 +87,9 @@ class SpotifyAPI:
         playlists = []
         try:
             for playlist in response['items']:
-                playlistInfo = {'id': playlist['id'], 'name': playlist['name'], 'owner': playlist['owner']['id']}
-                playlists.append(playlistInfo)
+                playlistInfo = {'id': playlist['id'], 'name': playlist['name'], 'owner': playlist['owner']['id'], 'snapshot_id': playlist['snapshot_id'], 'isCollaborative': bool(playlist['collaborative'])}
+                if playlistInfo['owner'] == self.userDetails.username or playlistInfo['isCollaborative']:
+                    playlists.append(playlistInfo)
             self.playlists = playlists
             return playlists
         except KeyError as e:
