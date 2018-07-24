@@ -228,7 +228,7 @@ class SpotifyAPI:
         return playlist
 
     def removeTrackFromPlaylist(self, trackId, playlistId, index):
-        url = self.BASEURL + "users/" + self.userDetails["id"] + "/playlists/" + playlistId + "/tracks"
+        url = self.BASEURL + "users/" + self.userDetails.username + "/playlists/" + playlistId + "/tracks"
         data = {"tracks": [{
             'positions': [int(index)],
             'uri': "spotify:track:" + trackId

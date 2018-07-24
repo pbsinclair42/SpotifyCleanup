@@ -90,6 +90,6 @@ body {
 }
 .volumeContainer {
     position: absolute;
-    right: calc(2.5vw - 50px);
+    left: calc(2.5vw);
     top: 20px;
 }

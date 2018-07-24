@@ -53,6 +53,14 @@ def continueAuthentication():
         return error
 
 
+@app.route('/delete/')
+def delete():
+    trackId = request.args['trackId']
+    playlistId = request.args['playlistId']
+    index = request.args['index']
+    return json.dumps(api.removeTrackFromPlaylist(trackId, playlistId, index))
+
+
 @app.route('/')
 def home():
     return render_template('home.html')
