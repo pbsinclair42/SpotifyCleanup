@@ -6,6 +6,25 @@
   .track > .albumArt {
     width: 150px;
     padding: 10px;
+    display: inline-block;
+    position: relative;
+  }
+  .track > .albumArt:hover > img, .track > .albumArt.playing > img {
+    opacity: 0.5;
+  }
+  .track > .albumArt:hover::after, .track > .albumArt.playing::after {
+    font-size: 80px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    content: "play_arrow";
+  }
+  .track > .albumArt.playing::after {
+    content: "pause";
+  }
+  .track > .albumArt > img {
+    width: 100%;
   }
   .track > .trackDetails {
     vertical-align: top;
@@ -32,7 +51,9 @@
 </script>
 <script id="trackTemplate" type="text/x-handlebars-template">
   <div class="track" id="{{ spotifyID }}-{{ index }}">
-    <img src="{{ albumArt }}" class="albumArt" title="{{ album }}">
+    <div class="albumArt material-icons" title="{{ album }}">
+      <img src="{{ albumArt }}">
+    </div>
     <div class="trackDetails">
       <p class="title" title="Title">{{ title }}</p>
       <p class="artists" title="Artists">{{ artists }}</p>
@@ -59,14 +80,21 @@
           if (!this.paused) {
             this.pause();
             this.currentTime = 0;
+            $(this).parent().children('.albumArt').removeClass('playing');
           }
         });
         audioDiv.play();
+        $(this).addClass('playing');
       } else {
         audioDiv.pause();
         audioDiv.currentTime = 0;
+        $(this).removeClass('playing');
       }
     });
+
+    $('#{{ spotifyID }}-{{ index }}-audio').get(0).onended = function(){
+      $(this).parent().children('.albumArt').removeClass('playing');
+    };
 </script{{ undefined }}>
 </script>
 {% endraw %}
