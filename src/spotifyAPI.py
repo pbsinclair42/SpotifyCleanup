@@ -86,12 +86,16 @@ class SpotifyAPI:
 
         playlists = []
         try:
-            for playlist in response['items']:
-                playlistInfo = {'id': playlist['id'], 'name': playlist['name'], 'owner': playlist['owner']['id'], 'snapshot_id': playlist['snapshot_id'], 'isCollaborative': bool(playlist['collaborative'])}
-                if playlistInfo['owner'] == self.userDetails.username or playlistInfo['isCollaborative']:
-                    playlists.append(playlistInfo)
-            self.playlists = playlists
-            return playlists
+            while True:
+                for playlist in response['items']:
+                    playlistInfo = {'id': playlist['id'], 'name': playlist['name'], 'owner': playlist['owner']['id'],
+                                    'snapshot_id': playlist['snapshot_id']}
+                    if playlistInfo['owner'] == self.userDetails.username or bool(playlist['collaborative']):
+                        playlists.append(playlistInfo)
+                if response['next'] is None:
+                    self.playlists = playlists
+                    return playlists
+                response = httpRequest(response['next'], {}, headers)
         except KeyError as e:
             if 'error' in response:
                 raise KeyError("Error getting user's playlists\n{}: {}", str(response['error']['status']),
