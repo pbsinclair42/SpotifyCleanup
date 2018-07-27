@@ -118,24 +118,25 @@ class SpotifyAPI:
     def getTracksInPlaylist(self, playlist, silent=True):
         url = self.BASEURL + "users/" + playlist['owner'] + "/playlists/" + playlist['id'] + "/tracks"
         params = {
-            "fields": "items(added_at,track(name,id,uri,is_playable,artists(name),album(images),duration_ms,preview_url))",
+            "fields": "items(added_at,track(name,id,uri,is_playable,artists(name),album(images),duration_ms,preview_url)),next",
             "market": self.MARKET
         }
         headers = self.STANDARD_HEADERS
 
-        numTracks = self.getNumberOfTracks(playlist)
+        response = httpRequest(url, params, headers)
 
         tracks = []
-        for offset in range(0, numTracks, 100):
-            params["offset"] = offset
-            response = httpRequest(url, params, headers)
-
-            for i, item in enumerate(response['items']):
+        numTracksSoFar = 0
+        while True:
+            for item in response['items']:
                 track = item['track']
                 track['added_at'] = item['added_at']
-                track['index'] = i
+                track['index'] = numTracksSoFar
                 tracks.append(track)
-        return tracks
+                numTracksSoFar += 1
+            if response['next'] is None:
+                return tracks
+            response = httpRequest(response['next'], {}, headers)
 
     @staticmethod
     def getUnplayableTracks(tracks, silent=True):
