@@ -16,7 +16,8 @@
     <div class="mainContainer">
       <ol class="playlistList">
         {% for playlist in playlists %}
-          <li class="playlistItem" id="{{ playlist.id }}" owner={{ playlist.owner }}>{{ playlist.name }}</li>
+          <li class="playlistItem" id="{{ playlist.id }}" owner="{{ playlist.owner }}"
+              snapshot_id="{{ playlist.snapshot_id }}">{{ playlist.name }}</li>
         {% endfor %}
       </ol>
       <div class="otherContainer">

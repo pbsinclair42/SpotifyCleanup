@@ -21,7 +21,8 @@ def getCleanupData():
     id = request.args['playlistId']
     owner = request.args['owner']
     name = request.args['playlistName']
-    playlist = {'id': id, 'owner': owner, 'name': name}
+    snapshot_id = request.args['snapshot_id']
+    playlist = {'id': id, 'owner': owner, 'name': name, 'snapshot_id': snapshot_id}
     api.getPlaylistInfo(playlist)
     return json.dumps(playlist)
 
@@ -58,7 +59,8 @@ def delete():
     trackId = request.args['trackId']
     playlistId = request.args['playlistId']
     index = request.args['index']
-    return json.dumps(api.removeTrackFromPlaylist(trackId, playlistId, index))
+    snapshot_id = request.args['snapshot_id']
+    return json.dumps(api.removeTrackFromPlaylist(trackId, playlistId, index, snapshot_id))
 
 
 @app.route('/')

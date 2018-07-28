@@ -43,7 +43,6 @@
       volumes.push(i / length);
     }
     var context = {'id':id, 'scope':scope, 'width':length * 11 + 47, 'volumes':volumes};
-    console.log(context);
 
     return template(context).trim();
   }

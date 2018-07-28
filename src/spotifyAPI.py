@@ -138,6 +138,18 @@ class SpotifyAPI:
                 return tracks
             response = httpRequest(response['next'], {}, headers)
 
+    def removeTrackFromPlaylist(self, trackId, playlistId, index, snapshot_id):
+        url = self.BASEURL + "users/" + self.userDetails.username + "/playlists/" + playlistId + "/tracks"
+        data = {"tracks": [{
+            'positions': [int(index)],
+            'uri': "spotify:track:" + trackId
+        }],
+            "snapshot_id": snapshot_id}
+        headers = self.STANDARD_HEADERS
+        headers['Content-Type'] = "application/json"
+        headers['Accept'] = "application/json"
+        return httpRequest(url, {}, headers, method="delete", data=data)
+
     @staticmethod
     def getUnplayableTracks(tracks, silent=True):
         unplayableTracks = []
@@ -232,17 +244,6 @@ class SpotifyAPI:
         playlist['unplayableTracks'] = self.getUnplayableTracks(tracks, silent=silent)
         playlist['duplicateTracks'] = self.getDuplicateTracks(tracks, silent=silent)
         return playlist
-
-    def removeTrackFromPlaylist(self, trackId, playlistId, index):
-        url = self.BASEURL + "users/" + self.userDetails.username + "/playlists/" + playlistId + "/tracks"
-        data = {"tracks": [{
-            'positions': [int(index)],
-            'uri': "spotify:track:" + trackId
-        }]}
-        headers = self.STANDARD_HEADERS
-        headers['Content-Type'] = "application/json"
-        headers['Accept'] = "application/json"
-        return httpRequest(url, {}, headers, method="delete", data=data)
 
 
 def _millisecondsToString(ms):

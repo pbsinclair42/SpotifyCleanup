@@ -61,7 +61,6 @@ function loadDeads(data){
 
 function load(currentPlaylist, callback){
   if (lastHttpRequest !== undefined) {
-    console.log(lastHttpRequest);
     lastHttpRequest.abort();
   }
   var tracksDisplay = $('.tracksDisplay');
@@ -70,7 +69,8 @@ function load(currentPlaylist, callback){
   if (playlistCache[currentPlaylist.id] !== undefined) {
     callback(playlistCache[currentPlaylist.id]);
   } else {
-    var url = BASE_URL + "getCleanupData/?playlistId=" + currentPlaylist.id + "&playlistName=" + currentPlaylist.innerHTML + "&owner=" + currentPlaylist.owner;
+    var url = BASE_URL + "getCleanupData/?playlistId=" + currentPlaylist.id + "&playlistName=" + currentPlaylist.name +
+      "&owner=" + currentPlaylist.owner + "&snapshot_id=" + currentPlaylist.snapshot_id;
     lastHttpRequest = httpGetAsync(url, function(data){
       data = JSON.parse(data);
       playlistCache[currentPlaylist.id] = data;
@@ -83,9 +83,10 @@ function loadDuplicatesOrDeads(){
   try {
     var currentPlaylistTab = $('.playlistItem.selected')[0];
     var currentPlaylist = {
-      'id':currentPlaylistTab.id,
-      'name':currentPlaylistTab.innerHTML,
-      'owner':currentPlaylistTab.getAttribute("owner")
+      'id': currentPlaylistTab.id,
+      'name': currentPlaylistTab.innerHTML,
+      'owner': currentPlaylistTab.getAttribute("owner"),
+      'snapshot_id': currentPlaylistTab.getAttribute("snapshot_id")
     };
   } catch (TypeError) {
     // no playlist yet selected
