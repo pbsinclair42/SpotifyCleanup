@@ -70,7 +70,7 @@ function load(currentPlaylist, callback){
     callback(playlistCache[currentPlaylist.id]);
   } else {
     var url = BASE_URL + "getCleanupData/?playlistId=" + currentPlaylist.id + "&playlistName=" + currentPlaylist.name +
-      "&owner=" + currentPlaylist.owner + "&snapshot_id=" + currentPlaylist.snapshot_id;
+        "&owner=" + currentPlaylist.owner + "&snapshot_id=" + currentPlaylist.snapshot_id;
     lastHttpRequest = httpGetAsync(url, function(data){
       data = JSON.parse(data);
       playlistCache[currentPlaylist.id] = data;
@@ -103,6 +103,20 @@ function loadDuplicatesOrDeads(){
     default:
       console.error("Unknown tab type: " + currentTab);
   }
+}
+
+function deleteTrack(trackId, playlistId, index, snapshot_id){
+  var url = BASE_URL + "delete/?playlistId=" + playlistId + "&trackId=" + trackId +
+      "&index=" + index + "&snapshot_id=" + snapshot_id;
+  httpGetAsync(url, function(data){
+    data = JSON.parse(data);
+    if (data['error']) {
+      alert("Whoops, something went wrong!");
+      console.error(data);
+    } else {
+      $("#" + data['trackId'] + '-' + data['index']).remove();
+    }
+  });
 }
 
 $(function(){

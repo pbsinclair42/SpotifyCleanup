@@ -140,15 +140,22 @@ class SpotifyAPI:
 
     def removeTrackFromPlaylist(self, trackId, playlistId, index, snapshot_id):
         url = self.BASEURL + "users/" + self.userDetails.username + "/playlists/" + playlistId + "/tracks"
-        data = {"tracks": [{
-            'positions': [int(index)],
-            'uri': "spotify:track:" + trackId
-        }],
-            "snapshot_id": snapshot_id}
+        data = {
+            "tracks": [{
+                'positions': [int(index)],
+                'uri': "spotify:track:" + trackId
+            }],
+            "snapshot_id": snapshot_id
+        }
         headers = self.STANDARD_HEADERS
         headers['Content-Type'] = "application/json"
         headers['Accept'] = "application/json"
-        return httpRequest(url, {}, headers, method="delete", data=data)
+        response = httpRequest(url, {}, headers, method="delete", data=data)
+        response['trackId'] = trackId
+        response['playlistId'] = playlistId
+        response['index'] = index
+        response['oldSnapshotId'] = snapshot_id
+        return response
 
     @staticmethod
     def getUnplayableTracks(tracks, silent=True):

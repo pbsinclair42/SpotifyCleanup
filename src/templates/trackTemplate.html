@@ -2,6 +2,7 @@
 <style type="text/css">
   .track {
     display: inline-block;
+    border-right: grey dotted;
   }
   .track > .albumArt {
     width: 150px;
@@ -25,6 +26,20 @@
   }
   .track > .albumArt > img {
     width: 100%;
+  }
+  .track > .delete {
+    background-color: #dd2400;
+    border-radius: 5px;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 9px;
+    padding: 1px 5px;
+    vertical-align: top;
+    margin-right: 10px;
+    user-select: none;
+    cursor: pointer;
   }
   .track > .trackDetails {
     vertical-align: top;
@@ -60,6 +75,7 @@
       <p class="duration" title="Duration">{{ duration }}</p>
       <p class="added_at" title="Date Added">{{ added_at }}</p>
     </div>
+    <div id="{{ spotifyID }}-{{ index }}-delete" class="delete" title="Delete track">x</div>
     <audio id="{{ spotifyID }}-{{ index }}-audio" class="trackPreview">
       <source
         src="{{ preview_url }}"
@@ -95,6 +111,11 @@
     $('#{{ spotifyID }}-{{ index }}-audio').get(0).onended = function(){
       $(this).parent().children('.albumArt').removeClass('playing');
     };
+
+    $('#{{ spotifyID }}-{{ index }}-delete').click(function(){
+      var currentPlaylistTab = $('.playlistItem.selected')[0];
+      deleteTrack("{{ spotifyID }}", currentPlaylistTab.id, {{ index }}, currentPlaylistTab.getAttribute("snapshot_id"));
+    });
 </script{{ undefined }}>
 </script>
 {% endraw %}
